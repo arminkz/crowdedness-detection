@@ -6,7 +6,7 @@ config = configparser.RawConfigParser()
 config.read(r'config')
 
 operation_mode = config['default']['operation_mode']
-timeout = config['default']['timeout']
+timeout = int(config['default']['timeout'])
 
 print(f"running in {operation_mode} mode...")
 
