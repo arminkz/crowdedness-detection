@@ -41,7 +41,7 @@ def process_pkt(packet):
 
 
 print('capturing wifi communications...')
-capture = pyshark.LiveCapture(interface='wlan1')
+capture = pyshark.LiveCapture(interface=interface)
 
 try:
     while True:
