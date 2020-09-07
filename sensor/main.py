@@ -1,14 +1,22 @@
 import pyshark
 import concurrent.futures
 import configparser
+import os
 
 config = configparser.RawConfigParser()
 config.read(r'config')
 
 operation_mode = config['default']['operation_mode']
 timeout = int(config['default']['timeout'])
+interface = config['default']['interface']
 
 print(f"running in {operation_mode} mode...")
+
+# put wifi card into monitor mode
+print("putting wifi in monitor mode...")
+os.system(f'sudo ifconfig {interface} down')
+os.system(f'sudo iwconfig {interface} mode monitor')
+os.system(f'sudo ifconfig {interface} up')
 
 unique_mac_addresses = set()
 
