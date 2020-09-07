@@ -39,4 +39,4 @@ try:
     while True:
         capture.apply_on_packets(process_pkt, timeout=timeout)
 except concurrent.futures._base.TimeoutError as e:
-
+    finalize()
