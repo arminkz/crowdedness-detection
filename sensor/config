@@ -1,6 +1,8 @@
 [default]
+sensor_id = sensor1
 operation_mode = debug
 interface = wlan1
 timeout = 60
-online_server_url = 192.168.1.3:2000
+mqtt_broker_url = 192.168.1.3
+mqtt_broker_port = 1883
 offline_csv_path = /var/log/crowdpi/capture.csv

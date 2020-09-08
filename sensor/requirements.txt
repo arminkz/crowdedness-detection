@@ -1,1 +1,2 @@
 pyshark~=0.4.2.11
+paho-mqtt~=1.5.0
