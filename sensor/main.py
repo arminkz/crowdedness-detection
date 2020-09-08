@@ -2,6 +2,7 @@ import pyshark
 import concurrent.futures
 import configparser
 import os
+import time
 
 config = configparser.RawConfigParser()
 config.read(r'config')
@@ -42,9 +43,11 @@ def process_pkt(packet):
 
 print('capturing wifi communications...')
 capture = pyshark.LiveCapture(interface=interface)
+capture.set_debug()
+start = time.time()
+for packet in capture.sniff_continuously():
+    process_pkt(packet)
+    if time.time() - start > timeout:
+        start = time.time()
+        finalize()
 
-try:
-    while True:
-        capture.apply_on_packets(process_pkt, timeout=timeout)
-except concurrent.futures._base.TimeoutError as e:
-    finalize()
