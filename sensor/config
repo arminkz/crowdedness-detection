@@ -1,6 +1,6 @@
 [default]
 sensor_id = sensor1
-operation_mode = debug
+operation_mode = online
 interface = wlan1
 timeout = 60
 mqtt_broker_url = 192.168.1.3

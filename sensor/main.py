@@ -14,10 +14,10 @@ sensor_id = config['default']['sensor_id']
 mqtt_url = config['default']['mqtt_broker_url']
 mqtt_port = int(config['default']['mqtt_broker_port'])
 
-print(f"running in {operation_mode} mode...")
+print(f"Running in {operation_mode} mode...")
 
 # put wifi card into monitor mode
-print("putting wifi in monitor mode...")
+print("Putting wifi in monitor mode...")
 os.system(f'sudo ifconfig {interface} down')
 os.system(f'sudo iwconfig {interface} mode monitor')
 os.system(f'sudo ifconfig {interface} up')
@@ -57,7 +57,7 @@ def finalize():
     if operation_mode == 'offline':
         print('offline mode not implemented')
     if operation_mode == 'online':
-        mqttc.publish(f'/{sensor_id}/wifi', unique_mac_addresses)
+        mqttc.publish(f'/{sensor_id}/wifi', str(len(unique_mac_addresses)))
         unique_mac_addresses.clear()
 
 
@@ -70,9 +70,12 @@ def process_pkt(packet):
         process_mac(packet['wlan'].ta)
 
 
-print('capturing wifi communications...')
+print('Capturing wifi communications...')
 capture = pyshark.LiveCapture(interface=interface)
-capture.set_debug()
+
+if operation_mode == 'debug':
+    capture.set_debug()
+
 start = time.time()
 for packet in capture.sniff_continuously():
     process_pkt(packet)
