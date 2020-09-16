@@ -62,8 +62,9 @@ def process_mac(mac_address):
 
 
 def process_pkt(packet):
-    if hasattr(packet['wlan'], 'ta'):
-        process_mac(packet['wlan'].ta)
+    if hasattr(packet,'wlan'):
+        if hasattr(packet['wlan'], 'ta'):
+            process_mac(packet['wlan'].ta)
 
 
 print('Capturing wifi communications...')
