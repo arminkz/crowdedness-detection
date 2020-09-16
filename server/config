@@ -1,0 +1,4 @@
+[default]
+mqtt_broker_url = 127.0.0.1
+mqtt_broker_port = 1883
+flask_port = 8000
