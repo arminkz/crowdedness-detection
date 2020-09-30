@@ -60,15 +60,25 @@ def index():
 
 @app.route('/chart-data')
 def chart_data():
-    def generate_random_data():
+
+    def send_crowd_data():
         while True:
-            json_data = json.dumps(
-                {'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 'value': random.random() * 100})
+            today = datetime.now()
+            data = []
+            pdata = []
+            for r in mongo.db.sensor_data.find({"dayOfMonth":int(today.strftime('%d'))}).sort([("hour",-1)]).skip(1).limit(5):
+                data.append({'time':r['hour'],'value': r['packets']})
+
+            for h in range(5):
+                pdata.append({'time': today.hour,'value': 500+pow(-1,h)*50+20*h})
+
+            json_data = json.dumps({'past': list(reversed(data)),'future': pdata})
+
             yield f"data:{json_data}\n\n"
-            time.sleep(1)
+            time.sleep(120)
 
     # SSE generator
-    return Response(generate_random_data(), mimetype='text/event-stream')
+    return Response(send_crowd_data(), mimetype='text/event-stream')
 
 
 if __name__ == '__main__':
