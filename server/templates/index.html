@@ -42,7 +42,7 @@
                 responsive: true,
                 title: {
                     display: true,
-                    text: 'Creating Real-Time Charts with Flask'
+                    text: 'Crowdedness'
                 },
                 tooltips: {
                     mode: 'index',
@@ -75,6 +75,7 @@
 
         const lineChart = new Chart(context, config);
 
+        // subscribe to SSE source
         const source = new EventSource("/chart-data");
 
         source.onmessage = function (event) {
