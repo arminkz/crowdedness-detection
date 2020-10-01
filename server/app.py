@@ -1,9 +1,9 @@
 import json
 import random
 import time
+import config
+from predictor import predict
 from datetime import datetime
-import calendar
-import pprint
 from flask import Flask, Response, render_template
 from flask_mqtt import Mqtt
 from flask_pymongo import PyMongo
@@ -60,19 +60,35 @@ def index():
 
 @app.route('/chart-data')
 def chart_data():
-
     def send_crowd_data():
         while True:
             today = datetime.now()
             data = []
             pdata = []
-            for r in mongo.db.sensor_data.find({"dayOfMonth":int(today.strftime('%d'))}).sort([("hour",-1)]).skip(1).limit(5):
-                data.append({'time':r['hour'],'value': r['packets']})
+            for r in mongo.db.sensor_data.find().sort([("dayOfMonth", -1), ("hour", -1)]).skip(1).limit(5):
+                data.append({'time': r['hour'], 'value': r['packets']})
 
+            # predict next 5 hours
+            predict_input = []
+            last = mongo.db.sensor_data.find().sort([("dayOfMonth", -1), ("hour", -1)]).limit(1)[0]
+            pdom = last['dayOfMonth']
+            pdow = last['dayOfWeek']
+            phour = last['hour']
             for h in range(5):
-                pdata.append({'time': today.hour,'value': 500+pow(-1,h)*50+20*h})
+                predict_input.append({'dayOfMonth': pdom, 'dayOfWeek': pdow, 'hour': phour})
+                phour += 1
+                if phour > 24:
+                    pdow += 1
+                    phour = 0
+                    if pdow > 6:
+                        pdom = (pdom + 1) % 30
+                        pdow = 0
+            predict_out = predict(predict_input)
+            for po in range(len(predict_input)):
+                po_hour = predict_input[po]['hour']
+                pdata.append({'time': po_hour, 'value': predict_out[po]})
 
-            json_data = json.dumps({'past': list(reversed(data)),'future': pdata})
+            json_data = json.dumps({'past': list(reversed(data)), 'future': pdata})
 
             yield f"data:{json_data}\n\n"
             time.sleep(120)
