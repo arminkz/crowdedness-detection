@@ -149,7 +149,22 @@
             scales: {
                 xAxes: [{
                     display: true,
+<<<<<<< HEAD
+                    text: 'Crowdedness'
+                },
+                tooltips: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                hover: {
+                    mode: 'nearest',
+                    intersect: true
+                },
+                scales: {
+                    xAxes: [{
+=======
                     scaleLabel: {
+>>>>>>> 4242bd971dd4a3197ae752ff6c531f8a8b1c0f03
                         display: true,
                         labelString: 'Time'
                     },
@@ -177,10 +192,15 @@
     const source = new EventSource("/chart-data");
     lineChart.update();
 
+<<<<<<< HEAD
+        // subscribe to SSE source
+        const source = new EventSource("/chart-data");
+=======
     source.onmessage = function (event) {
         const data = JSON.parse(event.data);
         const past = data['past'];
         const future = data['future'];
+>>>>>>> 4242bd971dd4a3197ae752ff6c531f8a8b1c0f03
 
         config.data.labels = [];
         config.data.datasets[0].data = [];
